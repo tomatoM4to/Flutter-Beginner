@@ -1,9 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const App());
+  runApp(const Root());
 }
 
 class App extends StatelessWidget {
@@ -11,7 +9,21 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(body: Home()));
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(height: 70),
+          Title(),
+          SizedBox(height: 30),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: CustomInput(),
+          ),
+          SizedBox(height: 50),
+          TodoList(),
+        ],
+      ),
+    );
   }
 }
 
@@ -20,80 +32,69 @@ class CustomInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                style: const TextStyle(color: Colors.black),
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  labelText: '할일을 입력하세요',
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                ),
+    const borderColor = Color(0xFF7CFFD6); // 민트 계열
+
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            decoration: InputDecoration(
+              labelText: 'Enter a task',
+              labelStyle: TextStyle(color: borderColor),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(color: borderColor),
+                gapPadding: 0,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(color: borderColor, width: 2),
+                gapPadding: 0,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(0),
+                borderSide: const BorderSide(color: borderColor),
+              ),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 12,
               ),
             ),
-            Container(
-              margin: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(30),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xB3F58529),
-                    Color(0xB3DD2A7B),
-                    Color(0xB38134AF),
-                    Color(0xB3515BD4),
-                  ],
-                ),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.add, color: Colors.white, size: 30),
-                onPressed: () {},
-              ),
-            ),
-          ],
+            style: const TextStyle(color: Colors.white),
+          ),
         ),
-      ),
+        Container(
+          height: 48,
+          width: 48,
+          margin: const EdgeInsets.only(left: 8),
+          decoration: BoxDecoration(
+            border: Border.all(color: borderColor, width: 1),
+            color: borderColor,
+          ),
+          child: IconButton(
+            onPressed: () {
+              // Add your action here
+            },
+            icon: const Icon(Icons.add, color: Color(0xFF1E1E1E)),
+            splashRadius: 24,
+            tooltip: 'Add',
+          ),
+        ),
+      ],
     );
   }
 }
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class Root extends StatelessWidget {
+  const Root({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xB3F58529),
-            Color(0xB3DD2A7B),
-            Color(0xB38134AF),
-            Color(0xB3515BD4),
-          ],
-        ),
-      ),
-      child: Column(
-        children: [
-          SizedBox(height: 50),
-          Title(),
-          SizedBox(height: 20),
-          CustomInput(),
-          SizedBox(height: 10),
-          Expanded(child: TodoList()),
-        ],
+    return MaterialApp(
+      home: Scaffold(
+        body: SafeArea(child: App()),
+        backgroundColor: const Color(0xFF1E1E1E),
       ),
     );
   }
@@ -104,14 +105,12 @@ class Title extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text(
-        'TODO List',
-        style: TextStyle(
-          fontSize: 40,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
+    return const Text(
+      'Todo List',
+      style: TextStyle(
+        fontSize: 40,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
       ),
     );
   }
@@ -125,23 +124,21 @@ class TodoItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(30),
-      ),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+      decoration: BoxDecoration(color: Colors.white.withOpacity(0.08)),
       child: Row(
         children: [
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 18, color: Colors.black),
+              style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
+            icon: const Icon(Icons.delete, color: Colors.redAccent),
             onPressed: onDelete ?? () {},
+            tooltip: 'Delete',
           ),
         ],
       ),
@@ -150,51 +147,18 @@ class TodoItem extends StatelessWidget {
 }
 
 class TodoList extends StatelessWidget {
+  static const todos = ['Todo 1', 'Todo 2', 'Todo 3', 'Todo 4', 'Todo 5'];
   const TodoList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 예시 데이터
-    final todos = [
-      '할일 1',
-      '할일 2',
-      '할일 3',
-      '할일 4',
-      '할일 5',
-      '할일 6',
-      '할일 1',
-      '할일 2',
-      '할일 3',
-      '할일 4',
-      '할일 5',
-      '할일 6',
-    ];
-
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.8),
-                width: 2,
-              ),
-            ),
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              itemCount: todos.length,
-              itemBuilder: (context, index) {
-                return TodoItem(text: todos[index]);
-              },
-            ),
-          ),
-        ),
+    return Expanded(
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        itemCount: todos.length,
+        itemBuilder: (context, index) {
+          return TodoItem(text: todos[index]);
+        },
       ),
     );
   }
